@@ -1,0 +1,14 @@
+{
+  "name": "skill-lens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-first, local-only checks for installed agent skills.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "check:self": "node skills/skill-lens/scripts/check.mjs skills",
+    "demo": "node skills/skill-lens/scripts/check.mjs examples/broken --json"
+  },
+  "license": "MIT"
+}
