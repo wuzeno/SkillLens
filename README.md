@@ -96,7 +96,7 @@ node --test
 node skills/skill-lens/scripts/check.mjs skills
 ```
 
-Tests use temporary directories and include failure cases, normal cases, scope boundaries, symbolic links, limits, JSON and exit codes. CI is configured for Node.js 22/24 on Linux, Windows and macOS; configured matrix coverage is not the same as completed CI runs.
+Tests use temporary directories and include failure cases, normal cases, scope boundaries, symbolic links, limits, JSON and exit codes. CI covers Node.js 22/24 on Linux, Windows and macOS. The first published source revision passed all six jobs; see the [dated verification record](docs/verification.md#2026-10-30-github-publication-evidence) and [current CI runs](https://github.com/wuzeno/SkillLens/actions). Completed CI does not prove live-agent compatibility.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before adding rules. Stronger host adapters, declared dependency checks, baselines and optional semantic review are potential future work, not current features.
 

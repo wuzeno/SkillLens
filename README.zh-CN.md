@@ -70,6 +70,6 @@ node skills/skill-lens/scripts/check.mjs "明确授权的目录" --json
 
 当前刻意不做版本求解、自动安装、自动同步、自动修复、命令依赖探测和模型语义评分。优先把窄范围检查做准。
 
-测试覆盖正常与故障样例、符号链接、越界引用、扫描限制、稳定报告和退出码。已配置 Linux、Windows、macOS 与 Node 22/24 的 CI 矩阵，但未运行的远程 CI 不应宣传为已通过。
+测试覆盖正常与故障样例、符号链接、越界引用、扫描限制、稳定报告和退出码。首次公开源码已通过 Linux、Windows、macOS 与 Node 22/24 的全部六组 CI，见[带日期的验证记录](docs/verification.md#2026-10-30-github-publication-evidence)与[当前 CI 运行](https://github.com/wuzeno/SkillLens/actions)。这不等于真实 agent 兼容性已经全部验证。
 
 规则细节、大小限制、排除目录、贡献原则和发布检查见对应文档。MIT 许可。未复制 Hallmark 的代码或素材。
