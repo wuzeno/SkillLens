@@ -4,6 +4,8 @@
 
 Find broken entry metadata, duplicate names, identical entry files, and missing local Markdown destinations. The skill explains the results; a bundled, dependency-free Node.js script performs repeatable checks.
 
+![SkillLens workflow: choose a directory, check Skill files, then review findings and suggestions.](docs/assets/skilllens-overview-en.svg)
+
 [中文说明](README.zh-CN.md) · [Detection rules](docs/rules.md) · [Report example (中文)](docs/reporting.md) · [Security boundaries](SECURITY.md) · [Release checklist](docs/releasing.md)
 
 > Early preview, v0.1.0. Portable static checks only. No host loading-order inference, semantic conflict proofs, automatic repairs, or security certification. “No errors” does not mean “safe.” The project name is SkillLens; the installable skill identifier is `skill-lens`. Registry and trademark availability have not been checked.

@@ -4,6 +4,8 @@
 
 SkillLens 也会找出内容完全相同的入口文件。具体检查由自带的 Node.js 脚本完成，只读取文件，可以重复运行。Skill 负责确认要查哪个目录，再解释结果、给出建议。
 
+![SkillLens 工作流程：指定目录，检查 Skill 文件，再查看问题、位置和建议。](docs/assets/skilllens-overview-zh.svg)
+
 [English](README.md) · [规则与限制](docs/rules.md) · [报告示例](docs/reporting.md) · [安全边界](SECURITY.md) · [发布清单](docs/releasing.md)
 
 > v0.1.0 还是早期预览版。它不能判断 agent 会优先加载哪个 Skill，也不能确认两段自然语言指令是否冲突。它不会自动修复文件，检查通过也不代表获得了安全认证。

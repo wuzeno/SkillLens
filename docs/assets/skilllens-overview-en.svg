@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="810" viewBox="0 0 1440 810" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">SkillLens — Skill file checks</title>
+<desc id="desc">SkillLens workflow: choose a directory, check entry metadata, duplicate names, identical entries and local links, then review findings, locations and suggestions.</desc>
+<defs>
+  <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#CFD8D2" opacity=".48"/></pattern>
+  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F7FAF5"/><stop offset="1" stop-color="#EAF2EB"/></linearGradient>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1 5 4 1 7" fill="none" stroke="#6E9589" stroke-width="1.4"/></marker>
+</defs>
+<rect width="1440" height="810" rx="18" fill="#F8F9F5"/>
+<path d="M980 0H1422Q1440 0 1440 18V810H1120Z" fill="#F0F4ED"/>
+<rect x="40" y="280" width="1360" height="405" fill="url(#dots)"/>
+<g font-family="Inter,Segoe UI,Noto Sans SC,Microsoft YaHei,Arial,sans-serif">
+<!-- Brand and header -->
+<g transform="translate(66 52)" fill="none" stroke="#246D5C" stroke-width="2.7" stroke-linecap="round">
+  <rect x="0" y="0" width="23" height="29" rx="4"/>
+  <path d="M6 8H17M6 14H12"/><circle cx="22" cy="24" r="8" fill="#F8F9F5"/><path d="m28 30 6 6"/>
+</g>
+<text x="112" y="80" font-size="27" fill="#172D2C" font-weight="650" >SkillLens</text>
+<text x="1372" y="77" font-size="14" fill="#5E746B" font-weight="550" text-anchor="end" letter-spacing="1.5">HOW IT WORKS</text>
+<line x1="66" y1="108" x2="1374" y2="108" stroke="#D9E1D8"/>
+<text x="66" y="191" font-size="50" fill="#172D2C" font-weight="650" letter-spacing="-1.4">Skill file checks</text>
+<text x="68" y="236" font-size="22" fill="#5F7069" font-weight="400" >Choose a directory. Check the files. See what needs attention.</text>
+<!-- Directional flow: behind the illustrations -->
+<path d="M410 449H501" stroke="#7E9F92" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+<path d="M929 449H1022" stroke="#7E9F92" stroke-width="1.8" fill="none" marker-end="url(#arrow)"/>
+<!-- Input: folder and skill entry -->
+<g transform="translate(121 328)">
+ <path d="M6 62V31Q6 20 17 20H81L102 40H207Q218 40 218 51V180Q218 191 207 191H17Q6 191 6 180Z" fill="#E8EFE6" stroke="#90A99C" stroke-width="1.5"/>
+ <rect x="53" y="0" width="127" height="154" rx="8" fill="#FFF" stroke="#91AA9D" stroke-width="1.5"/>
+ <text x="68" y="34" font-size="17" fill="#2A5A4C" font-weight="600" >SKILL.md</text>
+ <path d="M70 55H160M70 69H143M70 83H153" stroke="#B8C9BD" stroke-width="3" stroke-linecap="round"/>
+ <path d="M0 98Q0 88 10 88H82L98 103H222L204 184Q202 193 192 193H18Q8 193 7 183Z" fill="url(#paper)" stroke="#769B87" stroke-width="1.6"/>
+ <path d="M29 126H76" stroke="#50836D" stroke-width="3" stroke-linecap="round"/>
+</g>
+<!-- Scanner: exact four checks -->
+<rect x="523" y="302" width="384" height="295" rx="12" fill="#FDFEFA" stroke="#9BB8A6" stroke-width="1.5"/>
+<path d="M523 337V313Q523 302 534 302H558M872 302H896Q907 302 907 313V337M523 562V586Q523 597 534 597H558M872 597H896Q907 597 907 586V562" stroke="#28735C" stroke-width="3" fill="none"/>
+<circle cx="550" cy="330" r="4" fill="#347E65"/>
+<text x="566" y="336" font-size="16" fill="#42685A" font-weight="550" font-family="Consolas,monospace">check.mjs</text>
+<text x="879" y="336" font-size="13" fill="#7C8C81" font-weight="400" text-anchor="end" font-family="Consolas,monospace">SKILL.md</text>
+<line x1="546" y1="355" x2="883" y2="355" stroke="#DFE7DC"/>
+<rect x="547" y="371" width="28" height="28" rx="7" fill="#EAF2E8"/><path d="m557 379-4 6 4 6m8-12 4 6-4 6" stroke="#39725D" stroke-width="1.5" fill="none"/><text x="591" y="392" font-size="21" fill="#29483A" font-weight="500" >Entry metadata</text><circle cx="871" cy="385" r="3" fill="#B6CCBA"/><line x1="590" y1="410" x2="881" y2="410" stroke="#E8EDE4"/><rect x="547" y="424" width="28" height="28" rx="7" fill="#EAF2E8"/><path d="M554 434h14m-10 0v12m-5 0h11" stroke="#39725D" stroke-width="1.5" fill="none"/><text x="591" y="445" font-size="21" fill="#29483A" font-weight="500" >Duplicate names</text><circle cx="871" cy="438" r="3" fill="#B6CCBA"/><line x1="590" y1="463" x2="881" y2="463" stroke="#E8EDE4"/><rect x="547" y="477" width="28" height="28" rx="7" fill="#EAF2E8"/><rect x="554" y="484" width="11" height="13" rx="2" stroke="#39725D" stroke-width="1.4" fill="none"/><path d="M558 500h10V488" stroke="#39725D" stroke-width="1.4" fill="none"/><text x="591" y="498" font-size="21" fill="#29483A" font-weight="500" >Identical entries</text><circle cx="871" cy="491" r="3" fill="#B6CCBA"/><line x1="590" y1="516" x2="881" y2="516" stroke="#E8EDE4"/><rect x="547" y="530" width="28" height="28" rx="7" fill="#EAF2E8"/><path d="m560 539 3-3a4 4 0 0 1 5 5l-3 3m-3-2-3 3a4 4 0 0 1-5-5l3-3m2 6 6-6" stroke="#39725D" stroke-width="1.4" fill="none"/><text x="591" y="551" font-size="21" fill="#29483A" font-weight="500" >Local links</text><circle cx="871" cy="544" r="3" fill="#B6CCBA"/><!-- Output: conceptual report, not fabricated results -->
+<g transform="translate(1060 320)">
+ <rect x="7" y="9" width="230" height="240" rx="9" fill="#E3EBDF"/>
+ <path d="M11 0H194L230 36V231Q230 240 221 240H11Q0 240 0 229V11Q0 0 11 0Z" fill="#FEFEFB" stroke="#94AB99" stroke-width="1.5"/>
+ <path d="M194 0V29Q194 36 201 36H230" fill="#F0F4EB" stroke="#94AB99" stroke-width="1.5"/>
+ <path d="M23 30H82" stroke="#3D725B" stroke-width="4" stroke-linecap="round"/>
+ <path d="M23 49H136" stroke="#C2CDBE" stroke-width="3" stroke-linecap="round"/>
+ <line x1="23" y1="68" x2="207" y2="68" stroke="#E0E6DB"/>
+ <circle cx="29" cy="99" r="5" fill="#B88B48"/>
+ <text x="45" y="106" font-size="20" fill="#385342" font-weight="500" >Findings</text>
+ <path d="M45 121H189" stroke="#D2DCCB" stroke-width="3" stroke-linecap="round"/>
+ <path d="M25 148H33m-4-4v8" stroke="#57866B" stroke-width="1.5"/>
+ <text x="45" y="157" font-size="20" fill="#385342" font-weight="500" >Locations</text>
+ <path d="M45 172H160" stroke="#D2DCCB" stroke-width="3" stroke-linecap="round"/>
+ <path d="m25 198 4 4-4 4m4-4h7" stroke="#57866B" stroke-width="1.5" fill="none"/>
+ <text x="45" y="210" font-size="20" fill="#385342" font-weight="500" >Suggestions</text>
+</g>
+<!-- Stage labels -->
+<text x="233" y="643" font-size="25" fill="#172D2C" font-weight="600" text-anchor="middle">Choose a directory</text>
+<text x="233" y="676" font-size="17" fill="#617266" font-weight="400" text-anchor="middle">You decide what to scan</text>
+<text x="715" y="643" font-size="25" fill="#172D2C" font-weight="600" text-anchor="middle">Check the files</text>
+<text x="715" y="676" font-size="17" fill="#617266" font-weight="400" text-anchor="middle">Node.js · Static checks</text>
+<text x="1175" y="643" font-size="25" fill="#172D2C" font-weight="600" text-anchor="middle">Read the report</text>
+<text x="1175" y="676" font-size="16" fill="#617266" font-weight="400" text-anchor="middle">Review findings before making changes</text>
+<line x1="66" y1="724" x2="1374" y2="724" stroke="#D9E1D8"/>
+<circle cx="77" cy="760" r="4" fill="#3B7A5F"/>
+<text x="93" y="766" font-size="17" fill="#566C5F" font-weight="400" >Scanner only: no content execution · no uploads · no file changes</text>
+<text x="1374" y="766" font-size="12" fill="#6A8070" font-weight="500" text-anchor="end" letter-spacing="1.1" font-family="Consolas,monospace">SKILL → FILES → REPORT</text>
+</g>
+</svg>
