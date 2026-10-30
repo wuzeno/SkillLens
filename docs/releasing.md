@@ -1,6 +1,6 @@
 # Publication checklist
 
-Status: local preview, not published. This checklist does not claim GitHub or host tests have run.
+Release target: [wuzeno/SkillLens](https://github.com/wuzeno/SkillLens), public, MIT, v0.1.0 early preview. This is a checklist, not a claim that every item has passed; see the dated [verification record](verification.md) for completed checks and remaining limitations.
 
 ## Owner decisions
 

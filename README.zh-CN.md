@@ -6,7 +6,7 @@
 
 [English](README.md) · [规则与限制](docs/rules.md) · [报告示例](docs/reporting.md) · [安全边界](SECURITY.md) · [发布清单](docs/releasing.md)
 
-> v0.1.0 早期预览。当前不判断宿主加载优先级、不证明自然语言指令冲突、不自动修复，也不是安全认证。项目名称已选定为 SkillLens，安装标识为 `skill-lens`；尚未核实仓库名、包名或商标是否可用。
+> v0.1.0 早期预览。当前不判断宿主加载优先级、不证明自然语言指令冲突、不自动修复，也不是安全认证。项目名称已选定为 SkillLens，安装标识为 `skill-lens`；仓库为 [wuzeno/SkillLens](https://github.com/wuzeno/SkillLens)，尚未核实包名或商标是否可用。
 
 ## 本地试用
 
@@ -34,7 +34,13 @@ Windows 如果禁止运行 npm.ps1，可用 npm.cmd test 或 node --test，不�
 npx skills add . --skill skill-lens
 ```
 
-第三方安装器可能联网、修改技能目录；它不是检查器运行的必要条件。远程安装命令将在 GitHub 仓库地址确定后补充。宿主实际加载和调用仍需发布前验证，不能将静态扫描结果当作全宿主兼容证明。
+也可从 GitHub 安装，并按提示选择目标 agent 与安装范围：
+
+```sh
+npx skills add wuzeno/SkillLens --skill skill-lens
+```
+
+仅查看能否发现技能而不安装，可追加 `--list`。第三方安装器可能联网、修改技能目录；它不是检查器运行的必要条件。远程发现成功不代表任意宿主都能实际加载和调用，不能将静态扫描结果当作全宿主兼容证明。
 
 向 agent 提出：
 

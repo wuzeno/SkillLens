@@ -8,4 +8,4 @@ This is not a malware scanner, prompt-injection detector, host compatibility cer
 
 ## Reporting
 
-Before publication, notify the project owner privately. Once GitHub is configured, use a private vulnerability report if the repository enables it; otherwise request a private reporting channel without disclosing exploit details publicly. Do not put credentials, private skill contents or full private paths in an issue. Public security contact details will be finalized with the repository owner before release.
+Use GitHub's [private vulnerability reporting](https://github.com/wuzeno/SkillLens/security/advisories/new) for this repository; it is enabled. Do not disclose exploit details in a public issue. Do not include credentials, private skill contents or full private paths unless essential and appropriately redacted. For non-sensitive bugs and feature requests, use [Issues](https://github.com/wuzeno/SkillLens/issues).
