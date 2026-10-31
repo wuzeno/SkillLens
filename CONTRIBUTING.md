@@ -8,4 +8,6 @@ Keep agent instructions under `skills/skill-lens/`, tests under `test/`, demonst
 
 For host adapters, cite the actual supported host documentation/version and test precedence behavior. For parser extensions, add both accepted and unsupported examples. Changes to exit codes, finding identifiers or JSON structure need release notes and a schema-version decision.
 
+For conflict review changes, keep rule candidates, agent semantic assessments and citation validation separate. Cover conditional compatibility, negation, examples/quotes, unmatched wording, limits and every-pair completeness. Never interpret exit 0 or citation validity as semantic compatibility. Current source/pair limits deliberately refuse a whole-scope claim on incomplete packets.
+
 Use synthetic or explicitly authorized, redacted examples. Never commit personal skill stores, credentials, machine-specific scan reports or copied third-party assets without license review.

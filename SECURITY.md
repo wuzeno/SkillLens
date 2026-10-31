@@ -1,6 +1,6 @@
 # Security boundaries
 
-The checker is read-only, local and dependency-free. It does not execute scanned commands, import scanned code, make network requests, install software, repair files or follow symbolic links. Roots with symlink components are rejected. Its output contains local paths, names and limited evidence: review before posting reports publicly.
+The checker is read-only, local and dependency-free. It does not execute scanned commands, import scanned code, make network requests, install software, repair files or follow symbolic links. Roots with symlink components are rejected. Its default output contains local paths, names and limited evidence. Opt-in `--conflicts --json` also contains bounded full entry snapshots, including code/examples/quoted text: treat this as potentially sensitive, not a redacted report, and review before sharing. The checker does not save reports itself.
 
 The skill instructs the agent to obtain explicit scope, treat scanned content as untrusted data, and ask before repairs. These instructions are not a technical sandbox for the agent. An agent reading private data may send context to its provider; use provider controls appropriate to your data. The optional third-party installer has its own network and write behavior.
 

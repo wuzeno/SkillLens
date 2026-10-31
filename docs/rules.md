@@ -1,4 +1,6 @@
-# Detection contract — schemaVersion 1
+# Detection contract — default schemaVersion 1
+
+The original static rules below remain unchanged by default. Explicit `--conflicts` adds a schemaVersion 2 report with bounded candidates, a source/pair review packet and an optional citation-checked agent assessment. See [the conflict contract](conflicts.md) for its separate coverage, JSON format, limitations and exit semantics. Rule candidates are not semantic verdicts.
 
 Profile: `portable-static`. These are project conventions, not a certification against any host version. Discovery is recursive and case-sensitive for the exact filename `SKILL.md`. A directory without that file is not assumed to be a damaged skill. No host search paths or precedence rules are inferred.
 
@@ -41,4 +43,4 @@ Production limits: 2,000 directories, 10,000 file entries, nesting depth 16 belo
 
 ## JSON and CI
 
-Success-shaped reports: schemaVersion, root, profile, coverage, counts, skills, findings. Fatal failures: schemaVersion, failure {code,message}. A report with error findings still uses the report shape. Exit 2 takes precedence over exit 1 when coverage is incomplete. Exit 0 permits warnings/info; CI users requiring stricter policy must examine JSON rather than assume warnings fail the build. No suppressions, baseline mode, severity overrides or automatic fixes exist in this release.
+Success-shaped reports: schemaVersion, root, profile, coverage, counts, skills, findings. Fatal failures: schemaVersion, failure {code,message}. A report with error findings still uses the report shape. Exit 2 takes precedence over exit 1 when coverage is incomplete. Exit 0 permits warnings/info; CI users requiring stricter policy must examine JSON rather than assume warnings fail the build. In opt-in conflict mode it also permits pending semantic review and agent-assessed conflicts: these never become static errors implicitly. Incomplete conflict packets or invalid review imports return 2. No suppressions, baseline mode, severity overrides or automatic fixes exist in this release.

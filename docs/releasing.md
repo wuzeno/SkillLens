@@ -1,6 +1,6 @@
 # Publication checklist
 
-Release target: [wuzeno/SkillLens](https://github.com/wuzeno/SkillLens), public, MIT, v0.1.0 early preview. This is a checklist, not a claim that every item has passed; see the dated [verification record](verification.md) for completed checks and remaining limitations.
+Release target: [wuzeno/SkillLens](https://github.com/wuzeno/SkillLens), public, MIT, v0.2.0 early preview. This is a checklist, not a claim that every item has passed; see the dated [verification record](verification.md) for completed checks and remaining limitations.
 
 ## Owner decisions
 
@@ -29,12 +29,12 @@ The first three commands must succeed. The intentionally broken demo must exit 1
 
 - Add actual repository links and a real remote install command to both READMEs, then test it. No fake badges or download counts.
 - Enable Issues and private vulnerability reporting if supported. Add a concise description and topics (agent-skills, developer-tools, static-analysis).
-- Initial description: “A local-first skill that checks agent skill installations for broken metadata, duplicate names and missing references.”
+- Repository description: “Evidence-first checks and conditional conflict review for agent skills: entry metadata, duplicate names, missing references and pairwise instruction review.”
 - Keep the npm package private: this release is a GitHub skill repository, not an npm CLI distribution.
-- Tag v0.1.0 only after owner approval and review. Release notes must distinguish synthetic demonstrations, local verification and remote verification.
+- Tag v0.2.0 only after owner approval and review. Release notes must distinguish synthetic demonstrations, local verification and remote verification.
 
 ## Candidate launch text
 
-SkillLens is a skill that checks your skills. It runs local, read-only checks for entry metadata issues, repeated names, identical entry files and missing relative Markdown destinations, then explains the evidence. No model API is needed by the checker. It does not prove semantic conflicts, infer host loading order, or certify safety.
+SkillLens checks skill entry files and helps an agent review conflicting instructions. The local, read-only script checks metadata, duplicates and relative Markdown destinations; optional conflict mode queues every included pair with source snapshots, then the current agent assesses conditions and obligations. Review imports validate snapshots and citations, not semantic truth. No model API is needed by the script; the agent session's privacy terms still apply. It does not infer host loading order or certify safety.
 
 Replace this draft with the actual repository link and verified installation instructions before publishing. No growth or real-user accuracy claims are supported yet.

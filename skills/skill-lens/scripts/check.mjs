@@ -3,6 +3,7 @@ import { readdir, lstat, readFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { analyzeConflicts, validateReview, formatConflicts } from './conflicts.mjs';
 
 export const LIMITS = Object.freeze({ directories: 2000, files: 10000, depth: 16, documentBytes: 262144, totalBytes: 8388608 });
 const EXCLUDED = new Set(['.git', 'node_modules', '.venv', 'venv']);
@@ -65,7 +66,7 @@ function withoutCode(text) {
   }).join('\n');
 }
 
-export async function scan(input, limits = LIMITS) {
+export async function scan(input, limits = LIMITS, options = {}) {
   const supplied = path.resolve(input);
   let ancestor = path.parse(supplied).root;
   for (const part of path.relative(ancestor, supplied).split(path.sep).filter(Boolean)) {
@@ -77,6 +78,7 @@ export async function scan(input, limits = LIMITS) {
   const root = await realpath(supplied);
   const findings = [];
   const entries = [];
+  const documents = options.conflicts ? [] : null;
   let complete = true, directories = 0, files = 0, bytes = 0;
   const add = (rule, severity, file, evidence, suggestion, line) => findings.push({ rule, severity, file, ...(line ? { line } : {}), evidence, suggestion });
   const incomplete = (file, evidence) => { complete = false; add('SCAN_INCOMPLETE', 'warning', file, evidence, 'Narrow the scan scope or resolve the access/size issue, then scan again.'); };
@@ -126,6 +128,7 @@ export async function scan(input, limits = LIMITS) {
       }
       const digest = createHash('sha256').update(text).digest('hex');
       skills.push({ file: entry.relative, name, sha256: digest });
+      documents?.push({ file: entry.relative, name, description: meta.unsupported ? null : meta.fields.description, sha256: digest, text, bodyOffset: meta.bodyOffset || 0 });
       const prose = withoutCode(meta.body !== undefined ? '\n'.repeat(meta.bodyOffset) + meta.body : text);
       // Conservative subset: inline Markdown destinations beginning ./ or ../.
       // Reference links, HTML, bare paths and paths containing parentheses are not interpreted.
@@ -166,33 +169,76 @@ export async function scan(input, limits = LIMITS) {
   findings.sort((a, b) => a.file < b.file ? -1 : a.file > b.file ? 1 : a.rule < b.rule ? -1 : a.rule > b.rule ? 1 : (a.line || 0) - (b.line || 0));
   const counts = { error: 0, warning: 0, info: 0 };
   for (const finding of findings) counts[finding.severity]++;
-  return { schemaVersion: 1, root, profile: 'portable-static', coverage: { complete, skills: skills.length, directories, files, bytes, excludedDirectories: [...EXCLUDED], limitations: ['No host discovery or precedence inference.', 'Metadata parser supports a limited scalar subset, not full YAML.', 'Only inline Markdown destinations starting ./ or ../ are checked.', 'No reference links, HTML, command dependency checks or semantic conflict proof.', 'No files other than discovered SKILL.md entries are read as document content.', 'Symbolic links are not followed. Not hardened against concurrent filesystem mutation.'] }, counts, skills, findings };
+  const report = { schemaVersion: 1, root, profile: 'portable-static', coverage: { complete, skills: skills.length, directories, files, bytes, excludedDirectories: [...EXCLUDED], limitations: ['No host discovery or precedence inference.', 'Metadata parser supports a limited scalar subset, not full YAML.', 'Only inline Markdown destinations starting ./ or ../ are checked.', 'No reference links, HTML, command dependency checks or semantic conflict proof.', 'No files other than discovered SKILL.md entries are read as document content.', 'Symbolic links are not followed. Not hardened against concurrent filesystem mutation.'] }, counts, skills, findings };
+  if (documents) {
+    report.schemaVersion = 2;
+    report.conflicts = analyzeConflicts(documents, options.conflictLimits);
+    if (!complete) {
+      report.conflicts.coverage.complete = false;
+      report.conflicts.coverage.sourceComplete = false;
+      report.conflicts.coverage.limitations.push('Static scan was incomplete: unread entries are absent from pair totals.');
+    }
+  }
+  return report;
 }
 
-export function exitCode(report) { return !report.coverage.complete ? 2 : report.counts.error ? 1 : 0; }
+export function exitCode(report) { return !report.coverage.complete || report.conflicts?.coverage.complete === false ? 2 : report.counts.error ? 1 : 0; }
+const USAGE = 'Usage: node check.mjs <directory> [--json] [--conflicts [--review <review.json>]]';
 export async function main(args = process.argv.slice(2)) {
   if (args.length === 1 && ['--help', '-h'].includes(args[0])) {
-    console.log('Usage: node check.mjs <directory> [--json]\nRead-only static skill checks. Exit: 0 no errors (warnings possible), 1 errors, 2 failed/incomplete scan.'); return 0;
+    console.log(`${USAGE}\nRead-only checks; --conflicts adds candidates and an agent review packet (not a semantic proof).\nExit: 0 no static errors (semantic review may be pending), 1 static errors, 2 failed/incomplete scan or invalid review.`); return 0;
   }
-  const json = args.includes('--json');
-  const positional = args.filter(arg => arg !== '--json');
-  if (positional.length !== 1 || positional[0].startsWith('-') || args.filter(arg => arg === '--json').length > 1) {
-    const message = 'Usage: node check.mjs <directory> [--json]';
-    if (json) console.log(JSON.stringify({ schemaVersion: 1, failure: { code: 'USAGE', message } }, null, 2)); else console.error(message);
+  const json = args.includes('--json'), conflicts = args.includes('--conflicts');
+  const schemaVersion = conflicts ? 2 : 1;
+  const positional = [], seen = new Set();
+  let reviewPath = null, invalid = false;
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (['--json', '--conflicts', '--review'].includes(arg)) {
+      if (seen.has(arg)) invalid = true;
+      seen.add(arg);
+      if (arg === '--review') {
+        if (!args[i + 1] || args[i + 1].startsWith('-')) invalid = true;
+        else reviewPath = args[++i];
+      }
+    } else if (arg.startsWith('-')) invalid = true;
+    else positional.push(arg);
+  }
+  if (invalid || positional.length !== 1 || (seen.has('--review') && !conflicts)) {
+    if (json) console.log(JSON.stringify({ schemaVersion, failure: { code: 'USAGE', message: USAGE } }, null, 2)); else console.error(USAGE);
     return 2;
   }
   try {
-    const report = await scan(positional[0]);
+    const report = await scan(positional[0], LIMITS, { conflicts });
+    if (reviewPath) {
+      // The explicitly supplied review is data, never a module or an executable.
+      const stat = await lstat(reviewPath);
+      if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 4194304) throw Object.assign(new Error('Review must be a regular non-symlink JSON file no larger than 4 MiB.'), { code: 'REVIEW_INVALID' });
+      const buffer = await readFile(reviewPath);
+      if (buffer.length > 4194304) throw Object.assign(new Error('Review grew beyond 4 MiB.'), { code: 'REVIEW_INVALID' });
+      let review;
+      try { review = JSON.parse(buffer.toString('utf8').replace(/^\uFEFF/, '')); } catch { throw Object.assign(new Error('Review is not valid UTF-8 JSON (an optional UTF-8 BOM is accepted).'), { code: 'REVIEW_INVALID' }); }
+      const result = validateReview(report.conflicts, review);
+      if (!result.valid) throw Object.assign(new Error(result.errors.join('; ')), { code: 'REVIEW_INVALID' });
+      report.conflicts.assessment = result;
+      report.conflicts.coverage.semanticReview = 'agent_assessed_citations_validated';
+      report.conflicts.counts.pendingPairs = 0;
+      report.conflicts.counts.assessedPairs = result.decisions.length;
+      report.conflicts.counts.unresolvedPairs = result.decisions.filter(d => d.status === 'needs_context').length;
+      report.conflicts.counts.agentAssessedConflicts = result.decisions.filter(d => d.status === 'conflict').length;
+      for (const pair of report.conflicts.review.pairs) pair.reviewStatus = 'agent_assessed';
+    }
     if (json) console.log(JSON.stringify(report, null, 2));
     else {
       console.log(`SkillLens — ${report.root}\nProfile: ${report.profile}; coverage: ${report.coverage.complete ? 'complete within documented scope' : 'INCOMPLETE'}\n${report.coverage.skills} skill(s), ${report.counts.error} error(s), ${report.counts.warning} warning(s), ${report.counts.info} info`);
       for (const f of report.findings) console.log(`\n[${f.severity}] ${f.rule} ${f.file}${f.line ? `:${f.line}` : ''}\n  ${f.evidence}\n  Next: ${f.suggestion}`);
+      if (report.conflicts) console.log(formatConflicts(report.conflicts));
       console.log('\nNot a security certification. Run --json for coverage limitations.');
     }
     return exitCode(report);
   } catch (error) {
     const failure = { code: error.code || 'SCAN_FAILED', message: error.message };
-    if (json) console.log(JSON.stringify({ schemaVersion: 1, failure }, null, 2)); else console.error(`Scan failed: ${failure.message}`);
+    if (json) console.log(JSON.stringify({ schemaVersion, failure }, null, 2)); else console.error(`Scan failed: ${failure.message}`);
     return 2;
   }
 }

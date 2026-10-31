@@ -2,13 +2,13 @@
 
 **A skill that checks your skills — with evidence, not guesses.**
 
-Find broken entry metadata, duplicate names, identical entry files, and missing local Markdown destinations. The skill explains the results; a bundled, dependency-free Node.js script performs repeatable checks.
+Find entry problems and review potentially conflicting skill instructions. A dependency-free Node.js checker collects static evidence and queues pairs; your agent reads both entries and assesses whether their obligations can coexist under the same conditions.
 
 ![SkillLens workflow: choose a directory, check Skill files, then review findings and suggestions.](docs/assets/skilllens-overview-en.svg)
 
 [中文说明](README.zh-CN.md) · [Detection rules](docs/rules.md) · [Report example (中文)](docs/reporting.md) · [Security boundaries](SECURITY.md) · [Release checklist](docs/releasing.md)
 
-> Early preview, v0.1.0. Portable static checks only. No host loading-order inference, semantic conflict proofs, automatic repairs, or security certification. “No errors” does not mean “safe.” The project name is SkillLens; the installable skill identifier is `skill-lens`. Registry and trademark availability have not been checked.
+> v0.2.0 early preview adds optional, entry-only conflict review. No host loading-order inference, semantic proofs, automatic repairs, or security certification. Agent assessments are conditional, not observed host failures. The installable identifier is `skill-lens`; registry and trademark availability have not been checked.
 
 ## Try it locally
 
@@ -36,7 +36,7 @@ Windows PowerShell may block the `npm.ps1` shim; use `npm.cmd test` or run `node
 
 ## Install the skill
 
-The installable unit is **only** `skills/skill-lens/`. Keep `SKILL.md`, `scripts/check.mjs` and `LICENSE` together. Do not install the intentionally broken examples.
+The installable unit is **only** `skills/skill-lens/`. Keep `SKILL.md`, the entire `scripts/` directory (including `check.mjs` and `conflicts.mjs`), and `LICENSE` together. Do not install the intentionally broken examples.
 
 Copy that directory into the skill directory explicitly configured for your agent. Do not assume all agents use the same search paths; consult your host's documentation. This release does not auto-detect or modify agent configuration.
 
@@ -74,9 +74,25 @@ One explicit directory per scan. The root may contain a single entry or multiple
 | --- | --- |
 | 0 | No error findings. Warnings/info may exist, including no skills found. |
 | 1 | At least one error, with operational coverage complete within the documented scope. |
-| 2 | Usage failure, inaccessible root, or incomplete scan due to limits/access failures. |
+| 2 | Usage/root failure, incomplete static scan or conflict packet, or invalid imported review. |
 
 JSON contains `schemaVersion`, canonical `root`, `profile`, `coverage`, `counts`, `skills`, and `findings`. Fatal failures instead contain `schemaVersion` and `failure`. Findings include `rule`, `severity`, relative `file`, optional `line`, `evidence`, and `suggestion`. Entry hashes cover the entire LF-normalized file, not its support files. No timestamps or random IDs are added, so an unchanged environment yields stable output.
+
+## Optional conflict review (v0.2.0)
+
+```sh
+node skills/skill-lens/scripts/check.mjs examples/conflicts/approval --conflicts --json
+```
+
+This opts into schemaVersion 2; default static output stays schemaVersion 1. The checker produces limited opposing-directive/description-overlap candidates, full bounded source snapshots and every included pair, including pairs with no candidates. Your agent must then read BOTH entries for EVERY pair, assess task/target/stage, satisfiable conditions and exceptions, and distinguish contradictory obligations from compatible rules or routing overlap. No agent review means semantic review is still pending, even with exit 0.
+
+For example, editing after approval and forbidding edits before approval can coexist. Requiring the same final answer exclusively in French and exclusively in German cannot, if both rules jointly apply. This language example is intentionally outside the rule extractor's vocabulary: the agent must not limit review to keyword hits.
+
+An optional `--review <review.json>` re-scans and validates an agent-authored review's snapshot, complete pair coverage and exact citations from BOTH entries. It does not certify the reasoning: accepted results remain `provenance: agent_assessment` and `semanticTruthVerified: false`. Saving a review requires separate permission to write the artifact; scan consent alone is read-only. `needs_context` remains unresolved even when every pair has been assessed.
+
+The checker makes no model calls and does not upload sources; the current agent session remains subject to its provider's privacy terms. Linked content and real host activation/precedence are not reviewed. The bounded packet has explicit truncation limits; incomplete packets return exit 2. Neither candidate counts nor semantic judgments alter static error counts. See [the full conflict contract and paired examples (中文)](docs/conflicts.md).
+
+A user-run WorkBuddy test exercised the four synthetic pairs; the saved reviews were independently accepted by the installed checker, and all eight test entries retained their byte hashes. This is bounded host evidence, not universal compatibility or a proof of actual simultaneous activation. See [the dated verification record](docs/verification.md#2026-10-31-workbuddy-user-run-conflict-review).
 
 ## What makes this different from a prompt?
 
@@ -89,7 +105,7 @@ JSON contains `schemaVersion`, canonical `root`, `profile`, `coverage`, `counts`
 
 The built-in frontmatter reader supports a documented subset, not full YAML. Link checks cover only inline Markdown destinations beginning `./` or `../`; they do not recursively inspect supporting documents. Symbolic links/junctions are skipped; roots with symlink components are rejected. Explicit exclusions and size limits are listed in [the rule reference](docs/rules.md).
 
-`coverage.complete` means no operational interruption **within these rules**, not full semantic or host compatibility coverage. Unknown metadata and skipped links still have to be reviewed. This is not a sandbox for actively changing, hostile filesystems.
+`coverage.complete` means no operational interruption **within the static rules**; `conflicts.coverage.complete` separately covers the bounded review packet, not completion or truth of semantic review. Check `semanticReview`, pending and unresolved counts. Neither field establishes host compatibility. Unknown metadata and skipped links still have to be reviewed. This is not a sandbox for actively changing, hostile filesystems.
 
 ## Development
 
@@ -100,7 +116,7 @@ node skills/skill-lens/scripts/check.mjs skills
 
 Tests use temporary directories and include failure cases, normal cases, scope boundaries, symbolic links, limits, JSON and exit codes. CI covers Node.js 22/24 on Linux, Windows and macOS. The first published source revision passed all six jobs; see the [dated verification record](docs/verification.md#2026-10-30-github-publication-evidence) and [current CI runs](https://github.com/wuzeno/SkillLens/actions). Completed CI does not prove live-agent compatibility.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) before adding rules. Stronger host adapters, declared dependency checks, baselines and optional semantic review are potential future work, not current features.
+See [CONTRIBUTING.md](CONTRIBUTING.md) before adding rules. Stronger host adapters, declared dependency checks and baselines remain future work. Optional entry-only agent semantic review is available in v0.2.0; it is an assessment workflow, not a semantic proof engine.
 
 ## License
 
